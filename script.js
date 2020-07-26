@@ -14,10 +14,10 @@ const constraints = {
 const words = "Mirror Mirror on this side, whos the fairest of them all?";
 
  init = async () => {
-     question();
+    question();
     try {
         const stream = await navigator.mediaDevices.getUserMedia(constraints)
-        handleSuccess(stream);
+        setTimeout(()=>handleSuccess(stream), 6500);
     }
     catch(e) {
         errorMsgElement.innerHTML = `navigator.getUserMedia.error: ${e.toString()}`;
@@ -25,15 +25,11 @@ const words = "Mirror Mirror on this side, whos the fairest of them all?";
 }
 
 question = () => {
-    const question = words.split(" ");
-    let i = 0;
-    while(i < question.length){
-        console.log(question[i])
-        setTimeout(()=>{
-            heading.insertAdjacentHTML("beforeend",`<span>${question[i]}</span>`);
-        }, 1000)
-        i++;
-    }
+    new TypeIt(heading, {
+        strings: "Mirror Mirror on this site, who's the fairest of them all?",
+        speed: 100,
+        loop: false
+      }).go();
 }
 
 handleSuccess = (stream) => {
