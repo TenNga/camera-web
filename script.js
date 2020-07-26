@@ -2,6 +2,7 @@ const video = document.querySelector('#video');
 const canvas = document.querySelector('#canvas');
 const snap = document.querySelector('#snap');
 const img = document.querySelector('#image');
+const heading = document.querySelector('.header');
 const errorMsg = document.querySelector('#spanErrorMsg');
 
 const constraints = {
@@ -10,9 +11,12 @@ const constraints = {
     }
 };
 
+const words = "Mirror Mirror on this side, whos the fairest of them all?";
+
  init = async () => {
+     question();
     try {
-        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        const stream = await navigator.mediaDevices.getUserMedia(constraints)
         handleSuccess(stream);
     }
     catch(e) {
@@ -20,10 +24,34 @@ const constraints = {
     }
 }
 
+question = () => {
+    const question = words.split(" ");
+    let i = 0;
+    while(i < question.length){
+        console.log(question[i])
+        setTimeout(()=>{
+            heading.insertAdjacentHTML("beforeend",`<span>${question[i]}</span>`);
+        }, 1000)
+        i++;
+    }
+}
+
 handleSuccess = (stream) => {
     window.stream = stream;
     video.srcObject = stream;
 }
+
+gotMedia = (mediaStream) => {
+    const mediaStreamTrack = mediaStream.getVideoTracks()[0];
+    const imageCapture = new ImageCapture(mediaStreamTrack);
+    console.log(imageCapture);
+    imageCapture.takePhoto()
+    .then(blob => {
+        img.src = URL.createObjectURL(blob);
+        img.onload = () => { URL.revokeObjectURL(this.src); }
+    })
+    .catch(error => console.error('takePhoto() error:', error));
+  }
 
 init();
 
